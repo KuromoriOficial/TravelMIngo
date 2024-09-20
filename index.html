@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelMingo 10.4</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <h1>TravelMIngo 9.1</h1>
+    
+    <!-- Campo de pesquisa e botão -->
+    <input type="text" id="search" placeholder="Pesquise um endereço" />
+    <button id="searchButton">Buscar</button>
+    
+    <!-- Caixas de seleção para tipos de pontos turísticos -->
+    <div id="filterOptions">
+        <h2>Selecione os tipos de pontos turísticos</h2>
+        <label><input type="checkbox" value="museum" checked /> Museu</label>
+        <label><input type="checkbox" value="monument" checked /> Monumento</label>
+        <label><input type="checkbox" value="landmark" checked /> Marco Histórico</label>
+        <label><input type="checkbox" value="gallery" checked /> Galeria</label>
+    </div>
+    
+<div id="google_translate_element"></div>
+
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+</script>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+<!-- Modal para exibir informações sobre o ponto turístico -->
+<div id="infoModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitle"></h2>
+        <img id="modalImage" src="" alt="Imagem do ponto turístico" style="max-width:100%; height:auto;">
+        <p id="modalDescription"></p>
+    </div>
+</div>
+
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
