@@ -55,6 +55,10 @@ h1 {
     overflow-y: auto;  /* Adicione rolagem caso o conteúdo do modal seja muito grande */
 }
 
+audio {
+    display: none; /* Ocultar elementos de áudio */
+}
+
 
 .close {
     color: #aaa;

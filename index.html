@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
-    <h1>TravelMIngo 9.1</h1>
+    <h1>TravelMIngo 10.1</h1>
     
     <!-- Campo de pesquisa e botão -->
     <input type="text" id="search" placeholder="Pesquise um endereço" />
@@ -16,7 +16,7 @@
     
     <!-- Caixas de seleção para tipos de pontos turísticos -->
     <div id="filterOptions">
-        <h2>Selecione os tipos de pontos turísticos</h2>
+        <h2>Selecione os tipos de pontos turísticos (desenvolvimento)</h2>
         <label><input type="checkbox" value="museum" checked /> Museu</label>
         <label><input type="checkbox" value="monument" checked /> Monumento</label>
         <label><input type="checkbox" value="landmark" checked /> Marco Histórico</label>
@@ -33,6 +33,12 @@ function googleTranslateElementInit() {
 
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     
+<audio id="backgroundMusic" loop>
+    <source src="background-music.mp3" type="audio/mpeg">
+    Seu navegador não suporta o elemento de áudio.
+</audio>
+
+
 <!-- Modal para exibir informações sobre o ponto turístico -->
 <div id="infoModal" class="modal">
     <div class="modal-content">

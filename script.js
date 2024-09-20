@@ -194,6 +194,11 @@ function showInfoModal(title, description, imageUrl) {
     };
 }
 
+window.onload = function() {
+    const backgroundMusic = document.getElementById('backgroundMusic');
+    backgroundMusic.volume = 0.8; // Ajuste o volume conforme necessário
+    backgroundMusic.play();
+};
 
 
 // Adiciona um evento ao botão de pesquisa
