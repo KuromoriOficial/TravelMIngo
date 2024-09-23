@@ -8,6 +8,15 @@ const loadedAreas = new Set();  // Guardar áreas já carregadas
 const defaultLat = -15.8030;
 const defaultLon = -47.9007;
 
+// Função para expandir e recolher o menu
+const menuIcon = document.getElementById('menuIcon');
+const menu = document.getElementById('menu');
+
+menuIcon.addEventListener('click', () => {
+    menu.classList.toggle('show'); // Alterna entre exibir e ocultar o menu
+});
+
+
 // Função para inicializar o mapa
 function initMap(lat, lon) {
     if (!map) {
@@ -196,7 +205,7 @@ function showInfoModal(title, description, imageUrl) {
 
 window.onload = function() {
     const backgroundMusic = document.getElementById('backgroundMusic');
-    backgroundMusic.volume = 0.8; // Ajuste o volume conforme necessário
+    backgroundMusic.volume = 0.2; // Ajuste o volume conforme necessário
     backgroundMusic.play();
 };
 

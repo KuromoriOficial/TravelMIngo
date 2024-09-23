@@ -8,7 +8,14 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
-    <h1>TravelMIngo 10.1</h1>
+<!-- Ícone de menu (três barras) -->
+<div id="menuIcon" class="menu-icon">
+    &#9776;
+</div>
+
+<!-- Menu expansível -->
+<div id="menu" class="menu">
+    <h1>TravelMIngo 10.4</h1>
     
     <!-- Campo de pesquisa e botão -->
     <input type="text" id="search" placeholder="Pesquise um endereço" />
@@ -22,22 +29,29 @@
         <label><input type="checkbox" value="landmark" checked /> Marco Histórico</label>
         <label><input type="checkbox" value="gallery" checked /> Galeria</label>
     </div>
-    
-<div id="google_translate_element"></div>
 
+    <!-- Google Translate Widget -->
+    <div id="google_translate_element"></div>
+</div>
+
+<!-- Script do Google Translate -->
 <script type="text/javascript">
 function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+    new google.translate.TranslateElement({
+        pageLanguage: 'en', 
+        includedLanguages: 'ar,bg,de,el,en,es,fi,fr,hi,id,it,iws,ja,ko,landmark,nl,no,pl,pt,ro,ru,sv,th,tr,vi,zh-CN',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
 }
 </script>
 
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    
+
+<!-- Elemento de áudio de fundo -->
 <audio id="backgroundMusic" loop>
-    <source src="background-music.mp3" type="audio/mpeg">
+    <source src="musical.m4a" type="audio/mpeg">
     Seu navegador não suporta o elemento de áudio.
 </audio>
-
 
 <!-- Modal para exibir informações sobre o ponto turístico -->
 <div id="infoModal" class="modal">
@@ -49,10 +63,10 @@ function googleTranslateElementInit() {
     </div>
 </div>
 
+<!-- Mapa Leaflet -->
+<div id="map"></div>
 
-    <div id="map"></div>
-
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="script.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
