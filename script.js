@@ -20,10 +20,15 @@ menuIcon.addEventListener('click', () => {
 // Função para inicializar o mapa
 function initMap(lat, lon) {
     if (!map) {
-        map = L.map('map').setView([lat, lon], 13);
+        map = L.map('map', {
+            center: [lat, lon],
+            zoom: 17,
+            minZoom: 3,  // Ajuste este valor conforme desejado
+            maxZoom: 18  // Ajuste este valor conforme desejado
+        });
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
         // Carregar pontos turísticos ao mover o mapa
@@ -32,6 +37,7 @@ function initMap(lat, lon) {
         map.setView([lat, lon], 13);
     }
 }
+
 
 // Função para calcular o raio de busca (20 km)
 function calculateRadius() {
@@ -161,6 +167,40 @@ function searchAddress() {
     }
 }
 
+// Adicionar evento ao botão de envio de imagem
+document.getElementById('uploadButton').addEventListener('click', () => {
+    const fileInput = document.getElementById('uploadImage');
+    const file = fileInput.files[0];
+
+    if (file) {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        // Substituir 'urlDoServidor' com o caminho da sua API para enviar a imagem
+        fetch('urlDoServidor', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Imagem enviada com sucesso!');
+                // Atualizar a imagem no modal, se necessário
+                document.getElementById('modalImage').src = URL.createObjectURL(file);
+            } else {
+                alert('Falha ao enviar a imagem.');
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao enviar a imagem:', error);
+            alert('Erro ao enviar a imagem.');
+        });
+    } else {
+        alert('Por favor, selecione uma imagem.');
+    }
+});
+
+
 // Função para buscar informações da Wikipédia sobre o ponto turístico
 function fetchTouristInfo(name) {
     fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages&titles=${encodeURIComponent(name)}&format=json&exintro=true&explaintext=true&piprop=thumbnail&pithumbsize=500&origin=*`)
@@ -172,7 +212,7 @@ function fetchTouristInfo(name) {
 
             const title = page.title;
             const description = page.extract || 'Descrição não disponível';
-            const imageUrl = page.thumbnail ? page.thumbnail.source : 'https://via.placeholder.com/500';  // Imagem padrão se não houver uma disponível
+            const imageUrl = page.thumbnail ? page.thumbnail.source : 'https://i.ibb.co/5r954PK/6edf480b-c4ef-43d3-b558-366d23e.jpg';  // Imagem padrão se não houver uma disponível
 
             showInfoModal(title, description, imageUrl);
         })

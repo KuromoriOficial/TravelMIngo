@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TravelMingo 11.1</title>
+    <title>TravelMingo 11.4</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+    <!-- Adicionar o novo favicon -->
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <!-- Ícone de menu (três barras) -->
@@ -15,8 +18,11 @@
 
 <!-- Menu expansível -->
 <div id="menu" class="menu">
-    <h1>TravelMIngo 11.2</h1>
-    
+    <h1>TravelMIngo 11.4</h1>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TravelMingo</title>
+
     <!-- Campo de pesquisa e botão -->
     <input type="text" id="search" placeholder="Pesquise um endereço" />
     <button id="searchButton">Buscar</button>
@@ -60,8 +66,14 @@ function googleTranslateElementInit() {
         <h2 id="modalTitle"></h2>
         <img id="modalImage" src="" alt="Imagem do ponto turístico" style="max-width:100%; height:auto;">
         <p id="modalDescription"></p>
+
+        <!-- Novo botão de upload de imagem -->
+        <label for="uploadImage">Não encontrou a imagem correta? Envie uma:</label>
+        <input type="file" id="uploadImage" accept="image/*" />
+        <button id="uploadButton">Enviar Imagem</button>
     </div>
 </div>
+
 
 <!-- Mapa Leaflet -->
 <div id="map"></div>
