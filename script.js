@@ -4,13 +4,29 @@ let markerMap = new Map();  // Map para rastrear as coordenadas dos marcadores
 const maxMarkers = 100;  // Limite de marcações
 const loadedAreas = new Set();  // Guardar áreas já carregadas
 
-// Coordenadas primárias
-const defaultLat = -15.8030;
-const defaultLon = -47.9007;
+// Coordenadas das cidades
+const cidades = [
+    { nome: "Luxemburgo", coordenadas: [49.6117, 6.13] },
+    { nome: "Singapura", coordenadas: [1.3521, 103.8198] },
+    { nome: "Busan", coordenadas: [35.1796, 129.0756] },
+    { nome: "Celta", coordenadas: [35.1707, -2.9335] }, // Marrocos
+    { nome: "Porto", coordenadas: [41.1579, -8.6291] }, // Portugal
+    { nome: "Luanda", coordenadas: [-8.8390, 13.2894] }, // Angola
+    { nome: "Managua", coordenadas: [12.1364, -86.2514] }, // Nicarágua
+    { nome: "Quebec", coordenadas: [46.8139, -71.2082] }, // Canadá
+    { nome: "Reykjavík", coordenadas: [64.1466, -21.9426] }, // Islândia
+    { nome: "Vladivostok", coordenadas: [43.1155, 131.8855] }, // Rússia
+    { nome: "Hiroshima", coordenadas: [34.3853, 132.4553] }, // Japão
+    { nome: "Hong Kong", coordenadas: [22.3193, 114.1694] },  // China
+    { nome: "Brasilia", coordenadas: [15.8030, 47.9007] }  // brasilia
+];
 
-// Função para expandir e recolher o menu
-const menuIcon = document.getElementById('menuIcon');
-const menu = document.getElementById('menu');
+// Selecionar uma cidade aleatória ao carregar o mapa
+const cidadeAleatoria = cidades[Math.floor(Math.random() * cidades.length)];
+
+// Coordenadas primárias (alteradas para aleatórias)
+const defaultLat = cidadeAleatoria.coordenadas[0];
+const defaultLon = cidadeAleatoria.coordenadas[1];
 
 menuIcon.addEventListener('click', () => {
     menu.classList.toggle('show'); // Alterna entre exibir e ocultar o menu
