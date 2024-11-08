@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TravelMingo 11.4</title>
+    <title>TravelMingo 12.1</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     
@@ -16,9 +16,15 @@
     &#9776;
 </div>
 
+<!-- Ícone de menu (imagem personalizada) -->
+<div id="menuIcon1" class="menu-icon1">
+    <img src="images/menuicon.png" alt="Ícone de menu" />
+</div>
+
+
 <!-- Menu expansível -->
 <div id="menu" class="menu">
-    <h1>TravelMIngo 11.4</h1>
+    <h1>TravelMIngo 12.1</h1>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>TravelMingo</title>
@@ -37,6 +43,17 @@
         <!-- Novas categorias da Wikipédia -->
         <label><input type="checkbox" value="National_museum" /> Museu Nacional</label>
         <label><input type="checkbox" value="Art_gallery" /> Galeria de Arte</label>
+    </div>
+    
+    <div id="feedback-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" id="close-popup">&times;</span>
+            <h2>Hei meu mano! Aqui é SuportMingo falando com tigo, agradeço desde já a preferencia pelo nosso serviço. Estamos fazendo uma pesquisa de qualidade... VocÊ pode me ajudar respondendo-le? É fácil e rápido eu juro!</h2>
+            <p>Por favor, nos ajude a melhorar fazendo uma avaliação no nosso formulário!</p>
+            <button id="go-to-form">Responder agora!</button>
+            <button id="maybe-later">Talvez mais tarde ._.</button>
+            <button id="no-thanks">Não quero, me deixe em paz! >:/</button>
+        </div>
     </div>
     
 
@@ -70,11 +87,11 @@ function googleTranslateElementInit() {
         <h2 id="modalTitle"></h2>
         <img id="modalImage" src="" alt="Imagem do ponto turístico" style="max-width:100%; height:auto;">
         <p id="modalDescription"></p>
+        <!-- O conteúdo do modal será preenchido pela função JavaScript -->
+        <span class="close">&times;</span>
+    </div>
+</div>
 
-        <!-- Novo botão de upload de imagem -->
-        <label for="uploadImage">Não encontrou a imagem correta? Envie uma:</label>
-        <input type="file" id="uploadImage" accept="image/*" />
-        <button id="uploadButton">Enviar Imagem</button>
     </div>
 </div>
 

@@ -27,6 +27,7 @@ const cidadeAleatoria = cidades[Math.floor(Math.random() * cidades.length)];
 // Coordenadas primárias (alteradas para aleatórias)
 const defaultLat = cidadeAleatoria.coordenadas[0];
 const defaultLon = cidadeAleatoria.coordenadas[1];
+const menuIcon1 = document.getElementById('menuIcon1');
 
 menuIcon.addEventListener('click', () => {
     menu.classList.toggle('show'); // Alterna entre exibir e ocultar o menu
@@ -183,42 +184,49 @@ function searchAddress() {
     }
 }
 
-// Adicionar evento ao botão de envio de imagem
-document.getElementById('uploadButton').addEventListener('click', () => {
-    const fileInput = document.getElementById('uploadImage');
-    const file = fileInput.files[0];
+ // O CLIENTE QUE QUISER COLABORAR COM A FOTO DEVE ENTRAR EM CONTATO PREVIAMENTE E COLOCAR AQUI ATT
+const imagensPersonalizadas = {
+    "federal university of pará": "https://i.ibb.co/TB16jkf/Universidade-Federal-do-Par-UFPA-logo.png",
+};
 
-    if (file) {
-        const formData = new FormData();
-        formData.append('image', file);
+// Função para normalizar o nome do ponto turístico
+function normalizeName(name) {
+    return name.trim().toLowerCase();
+}
 
-        // Substituir 'urlDoServidor' com o caminho da sua API para enviar a imagem
-        fetch('urlDoServidor', {
-            method: 'POST',
-            body: formData,
-        })
+// Função para buscar as categorias do ponto turístico na Wikidata
+function fetchTouristCategories(wikidataId) {
+    return fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${wikidataId}&sites=enwiki&props=claims&format=json&origin=*`)
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                alert('Imagem enviada com sucesso!');
-                // Atualizar a imagem no modal, se necessário
-                document.getElementById('modalImage').src = URL.createObjectURL(file);
-            } else {
-                alert('Falha ao enviar a imagem.');
+            const categories = [];
+            const claims = data.entities[wikidataId].claims;
+            
+            // Verificar se o ponto turístico tem categorias associadas
+            if (claims['P31']) {  // P31 é a propriedade de classe ou instância (ex: monumento, museu)
+                claims['P31'].forEach(claim => {
+                    const categoryId = claim.mainsnak.datavalue.value.id;
+                    categories.push(categoryId);
+                });
             }
+            return categories;
         })
         .catch(error => {
-            console.error('Erro ao enviar a imagem:', error);
-            alert('Erro ao enviar a imagem.');
+            console.error('Erro ao buscar categorias:', error);
+            return [];
         });
-    } else {
-        alert('Por favor, selecione uma imagem.');
-    }
-});
+}
 
-
-// Função para buscar informações da Wikipédia sobre o ponto turístico
+// Função para buscar informações da Wikipédia e da Wikidata sobre o ponto turístico
 function fetchTouristInfo(name) {
+    const normalizedName = normalizeName(name);
+
+    // Verifica se há uma imagem personalizada para este ponto turístico
+    const imageUrl = imagensPersonalizadas[normalizedName];
+    console.log(`Buscando informações para: ${name} (Normalizado: ${normalizedName})`);
+    console.log(`URL da imagem personalizada: ${imageUrl || "Não encontrada"}`);
+
+    // Sempre buscar informações da Wikipédia, independentemente de haver uma imagem personalizada
     fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages&titles=${encodeURIComponent(name)}&format=json&exintro=true&explaintext=true&piprop=thumbnail&pithumbsize=500&origin=*`)
         .then(response => response.json())
         .then(data => {
@@ -228,28 +236,79 @@ function fetchTouristInfo(name) {
 
             const title = page.title;
             const description = page.extract || 'Descrição não disponível';
-            const imageUrl = page.thumbnail ? page.thumbnail.source : 'https://i.ibb.co/5r954PK/6edf480b-c4ef-43d3-b558-366d23e.jpg';  // Imagem padrão se não houver uma disponível
+            const wikiImageUrl = page.thumbnail ? page.thumbnail.source : 'https://i.ibb.co/5r954PK/6edf480b-c4ef-43d3-b558-366d23e.jpg';
 
-            showInfoModal(title, description, imageUrl);
+            // Se houver uma imagem personalizada, exibe-a junto com a descrição da Wikipédia
+            const finalImageUrl = imageUrl || wikiImageUrl;  // Se houver imagem personalizada, usa ela, senão usa a da Wikipédia
+
+            // Link para a página da Wikipédia
+            const wikiLink = `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`;
+
+            // Buscar a categoria na Wikidata
+            fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&sites=enwiki&titles=${encodeURIComponent(title)}&props=claims&format=json`)
+                .then(wikidataResponse => wikidataResponse.json())
+                .then(wikidataData => {
+                    const entityId = Object.keys(wikidataData.entities)[0];
+                    const claims = wikidataData.entities[entityId].claims;
+                    let category = 'Categoria não encontrada';
+
+                    // Procurar pela categoria (P373) na resposta da Wikidata
+                    if (claims && claims.P373) {
+                        category = claims.P373[0].mainsnak.datavalue.value;
+                    }
+
+                    // Exibe o modal com a descrição, imagem e categoria
+                    showInfoModal(title, description, finalImageUrl, wikiLink, category);
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar categoria na Wikidata:', error);
+                    // Mesmo que não encontre a categoria, exibe o modal com as informações
+                    showInfoModal(title, description, finalImageUrl, wikiLink, 'Categoria não disponível');
+                });
         })
         .catch(error => {
             console.error('Erro ao buscar informações do ponto turístico:', error);
         });
 }
 
-// Função para exibir o modal com informações sobre o ponto turístico
-function showInfoModal(title, description, imageUrl) {
+// Função para exibir o modal com informações sobre o ponto turístico, incluindo a categoria
+function showInfoModal(title, description, imageUrl, wikiLink, category) {
     document.getElementById('modalTitle').innerText = title;
     document.getElementById('modalDescription').innerText = description;
     document.getElementById('modalImage').src = imageUrl;
 
+    // Adiciona um link para visitar a página da Wikipédia
+    const modalContent = document.querySelector('.modal-content');
+    
+    // Remove o botão anterior, se existir
+    const existingVisitButton = modalContent.querySelector('.visit-button');
+    if (existingVisitButton) {
+        modalContent.removeChild(existingVisitButton);
+    }
+
+    const visitLinkButton = document.createElement('a');
+    visitLinkButton.href = wikiLink;
+    visitLinkButton.target = "_blank"; // Abre em uma nova aba
+    visitLinkButton.className = "visit-button";  // Estilo para o botão (você pode criar esse estilo no CSS)
+    visitLinkButton.innerText = "Visitar Página da Wikipédia";
+    modalContent.appendChild(visitLinkButton);  // Adiciona o botão no modal
+
+    // Exibe a categoria, se encontrada
+    const categoryElement = document.createElement('p');
+    categoryElement.innerText = `Categoria: ${category}`;
+    modalContent.appendChild(categoryElement);
+
+    // Exibe o modal
     const modal = document.getElementById('infoModal');
     modal.style.display = "block";
 
     // Fechar o modal ao clicar no botão de fechar
-    document.querySelector('.modal .close').onclick = function() {
-        modal.style.display = "none";
-    };
+    const closeButton = document.querySelector('.modal .close');
+    if (closeButton) {
+        closeButton.onclick = function() {
+            modal.style.display = "none";
+        };
+    }
 
     // Fechar o modal ao clicar fora da área do modal
     window.onclick = function(event) {
@@ -261,18 +320,84 @@ function showInfoModal(title, description, imageUrl) {
 
 window.onload = function() {
     const backgroundMusic = document.getElementById('backgroundMusic');
-    backgroundMusic.volume = 0.2; // Ajuste o volume conforme necessário
-    backgroundMusic.play();
+    if (backgroundMusic) {
+        backgroundMusic.volume = 0.2;
+        backgroundMusic.play();
+    }
+
+    // Inicializando o mapa com as coordenadas fornecidas e pontos turísticos
+    initMap(defaultLat, defaultLon);
+    loadTouristSpots();
 };
 
-
-// Adiciona um evento ao botão de pesquisa
-document.getElementById('searchButton').addEventListener('click', searchAddress);
+// Adiciona um evento ao botão de pesquisa, se ele estiver presente
+const searchButton = document.getElementById("searchButton");
+if (searchButton) {
+    searchButton.addEventListener("click", searchAddress);
+}
 
 // Adiciona um evento para atualizar os pontos turísticos quando as caixas de seleção mudarem
-document.querySelectorAll('#filterOptions input').forEach(checkbox => {
-    checkbox.addEventListener('change', loadTouristSpots);
+const checkboxes = document.querySelectorAll("#filterOptions input");
+if (checkboxes) {
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", loadTouristSpots);
+    });
+}
+
+// Função que exibe o pop-up
+function showPopup() {
+    const popup = document.getElementById('feedback-popup');
+    popup.style.display = 'flex';
+}
+
+// Função para fechar o pop-up
+function closePopup() {
+    const popup = document.getElementById('feedback-popup');
+    popup.style.display = 'none';
+}
+
+// Função para checar se o pop-up deve ser exibido
+function checkPopupStatus() {
+    const noThanks = localStorage.getItem('noThanks'); // Verifica se o usuário optou por "Não quero, me deixe em paz!"
+    if (noThanks === 'true') {
+        return; // Se já decidiu "não quero", não exibe o pop-up
+    }
+
+    const lastShownTime = localStorage.getItem('lastShownTime');
+    const currentTime = new Date().getTime();
+
+     // Se o pop-up foi fechado com "Talvez mais tarde" e passaram 20 minutos, mostra novamente
+     if (lastShownTime && (currentTime - lastShownTime) >= 60000) { // 20 minutos = 1200000 milissegundos
+        showPopup();
+    } else if (!lastShownTime) {
+        showPopup(); // Exibe o pop-up pela primeira vez se não houver registro
+    }
+}
+
+// Ações dos botões
+document.getElementById('go-to-form').addEventListener('click', function () {
+    window.location.href = 'https://docs.google.com/forms/d/e/1FAIpQLScN28TPFQ5mjA5GMHeVZq-zKp8SPODWptuRJAo1CV9FVUIURQ/viewform?usp=pp_url'; // Coloque o link do seu formulário aqui
 });
+
+document.getElementById('maybe-later').addEventListener('click', function () {
+    closePopup();
+    localStorage.setItem('lastShownTime', new Date().getTime()); // Registra o horário em que o usuário clicou em "Talvez mais tarde"
+    setTimeout(showPopup, 60000); // Exibe o pop-up novamente após 12 minutos
+});
+
+document.getElementById('no-thanks').addEventListener('click', function () {
+    closePopup();
+    localStorage.setItem('noThanks', 'true'); // Marca que o usuário não quer mais ver o pop-up
+});
+
+// Fechar o pop-up clicando no "x"
+document.getElementById('close-popup').addEventListener('click', closePopup);
+
+// Quando a página carregar, verifica o estado do pop-up
+window.onload = function () {
+    checkPopupStatus();
+};
+
 
 // Inicializando o mapa com as coordenadas fornecidas e pontos turísticos
 initMap(defaultLat, defaultLon);
