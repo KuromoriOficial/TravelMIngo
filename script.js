@@ -374,6 +374,24 @@ function checkPopupStatus() {
     }
 }
 
+// Elementos do botão e do pop-up
+const showResearchPopupButton = document.getElementById('show-research-popup');
+const researchPopup = document.getElementById('feedback-popup');  // Assumindo que este é o ID do pop-up da pesquisa
+const popupImage = document.getElementById('popup-image'); // Para controlar a imagem junto ao pop-up
+
+// Evento para mostrar o pop-up de pesquisa
+showResearchPopupButton.addEventListener('click', () => {
+    researchPopup.style.display = 'flex'; // Exibir o pop-up
+    popupImage.style.display = 'block'; // Exibir a imagem do flamingo junto ao pop-up
+});
+
+// Fechar o pop-up de pesquisa (incluindo a imagem)
+document.getElementById('close-popup').addEventListener('click', () => {
+    researchPopup.style.display = 'none'; // Fechar o pop-up
+    popupImage.style.display = 'none'; // Esconder a imagem
+});
+
+
 // Ações dos botões
 document.getElementById('go-to-form').addEventListener('click', function () {
     window.location.href = 'https://docs.google.com/forms/d/e/1FAIpQLScN28TPFQ5mjA5GMHeVZq-zKp8SPODWptuRJAo1CV9FVUIURQ/viewform?usp=pp_url'; // Coloque o link do seu formulário aqui

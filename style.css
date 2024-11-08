@@ -106,6 +106,22 @@ audio {
     z-index: 1000; /* Ficar acima do mapa */
 }
 
+#show-research-popup {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;  /* Ajuste o espaçamento conforme necessário */
+}
+
+#show-research-popup:hover {
+    background-color: #0056b3;
+}
+
+
 .menu.show {
     left: 0; /* Expande o menu para dentro da tela */
 }
@@ -197,3 +213,58 @@ audio {
     cursor: pointer;
 }
 
+/* Imagem ao lado do pop-up */
+.popup-image {
+    display: none; /* Inicialmente a imagem está oculta */
+    margin-left: 10px; /* Distância entre o pop-up e a imagem */
+    position: relative;
+    animation: swing 2s ease-in-out infinite; /* Efeito de balança */
+    max-width: 150px; /* Ajuste o tamanho da imagem */
+}
+
+/* Animação de balanço */
+@keyframes swing {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(10deg);
+    }
+    50% {
+        transform: rotate(0deg);
+    }
+    75% {
+        transform: rotate(-10deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+/* Estilo para o botão na aba */
+.popup-trigger {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10000;
+    background-color: #007bff;
+    border: none;
+    border-radius: 50px;
+    padding: 15px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.popup-trigger button {
+    border: none;
+    background-color: transparent;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.popup-trigger button:hover {
+    background-color: #0056b3;
+}
