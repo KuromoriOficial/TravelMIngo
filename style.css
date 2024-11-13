@@ -216,10 +216,9 @@ audio {
 /* Imagem ao lado do pop-up */
 .popup-image {
     display: none; /* Inicialmente a imagem está oculta */
-    margin-left: 10px; /* Distância entre o pop-up e a imagem */
+    margin-left: 100px; /* Distância entre o pop-up e a imagem */
     position: relative;
     animation: swing 2s ease-in-out infinite; /* Efeito de balança */
-    max-width: 150px; /* Ajuste o tamanho da imagem */
 }
 
 /* Animação de balanço */

@@ -184,9 +184,11 @@ function searchAddress() {
     }
 }
 
- // O CLIENTE QUE QUISER COLABORAR COM A FOTO DEVE ENTRAR EM CONTATO PREVIAMENTE E COLOCAR AQUI ATT
 const imagensPersonalizadas = {
     "federal university of pará": "https://i.ibb.co/TB16jkf/Universidade-Federal-do-Par-UFPA-logo.png",
+    "national library of nicaragua rubén darío": "https://i.ibb.co/VwF0dHc/Palacio-de-la-Cultura-Nicaragua.png",
+    "Instituto Loyola": "https://i.ibb.co/w71Ybb1/Logo-300x425-212x300.png",
+    "National Agrarian University (Nicaragua)": "https://i.ibb.co/fMtCQQf/OIP.jpg",
 };
 
 // Função para normalizar o nome do ponto turístico
