@@ -196,30 +196,6 @@ function normalizeName(name) {
     return name.trim().toLowerCase();
 }
 
-// Função para buscar as categorias do ponto turístico na Wikidata
-function fetchTouristCategories(wikidataId) {
-    return fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${wikidataId}&sites=enwiki&props=claims&format=json&origin=*`)
-        .then(response => response.json())
-        .then(data => {
-            const categories = [];
-            const claims = data.entities[wikidataId].claims;
-            
-            // Verificar se o ponto turístico tem categorias associadas
-            if (claims['P31']) {  // P31 é a propriedade de classe ou instância (ex: monumento, museu)
-                claims['P31'].forEach(claim => {
-                    const categoryId = claim.mainsnak.datavalue.value.id;
-                    categories.push(categoryId);
-                });
-            }
-            return categories;
-        })
-        .catch(error => {
-            console.error('Erro ao buscar categorias:', error);
-            return [];
-        });
-}
-
-// Função para buscar informações da Wikipédia e da Wikidata sobre o ponto turístico
 function fetchTouristInfo(name) {
     const normalizedName = normalizeName(name);
 
@@ -240,11 +216,13 @@ function fetchTouristInfo(name) {
             const description = page.extract || 'Descrição não disponível';
             const wikiImageUrl = page.thumbnail ? page.thumbnail.source : 'https://i.ibb.co/5r954PK/6edf480b-c4ef-43d3-b558-366d23e.jpg';
 
-            // Se houver uma imagem personalizada, exibe-a junto com a descrição da Wikipédia
-            const finalImageUrl = imageUrl || wikiImageUrl;  // Se houver imagem personalizada, usa ela, senão usa a da Wikipédia
-
-            // Link para a página da Wikipédia
+            const finalImageUrl = imageUrl || wikiImageUrl;
             const wikiLink = `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`;
+
+            // Limpar categorias antigas antes de adicionar novas
+            const modalContent = document.querySelector('.modal-content');
+            const existingCategoryElements = modalContent.querySelectorAll('.category');
+            existingCategoryElements.forEach(element => element.remove());
 
             // Buscar a categoria na Wikidata
             fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&sites=enwiki&titles=${encodeURIComponent(title)}&props=claims&format=json`)
@@ -254,17 +232,14 @@ function fetchTouristInfo(name) {
                     const claims = wikidataData.entities[entityId].claims;
                     let category = 'Categoria não encontrada';
 
-                    // Procurar pela categoria (P373) na resposta da Wikidata
                     if (claims && claims.P373) {
                         category = claims.P373[0].mainsnak.datavalue.value;
                     }
 
-                    // Exibe o modal com a descrição, imagem e categoria
                     showInfoModal(title, description, finalImageUrl, wikiLink, category);
                 })
                 .catch(error => {
                     console.error('Erro ao buscar categoria na Wikidata:', error);
-                    // Mesmo que não encontre a categoria, exibe o modal com as informações
                     showInfoModal(title, description, finalImageUrl, wikiLink, 'Categoria não disponível');
                 });
         })
@@ -273,16 +248,16 @@ function fetchTouristInfo(name) {
         });
 }
 
-// Função para exibir o modal com informações sobre o ponto turístico, incluindo a categoria
+// Atualizar o modal para limpar categorias antigas
 function showInfoModal(title, description, imageUrl, wikiLink, category) {
+    const modal = document.getElementById('infoModal');
+    const modalContent = document.querySelector('.modal-content');
+
     document.getElementById('modalTitle').innerText = title;
     document.getElementById('modalDescription').innerText = description;
     document.getElementById('modalImage').src = imageUrl;
 
-    // Adiciona um link para visitar a página da Wikipédia
-    const modalContent = document.querySelector('.modal-content');
-    
-    // Remove o botão anterior, se existir
+    // Remover o botão de link anterior
     const existingVisitButton = modalContent.querySelector('.visit-button');
     if (existingVisitButton) {
         modalContent.removeChild(existingVisitButton);
@@ -290,30 +265,27 @@ function showInfoModal(title, description, imageUrl, wikiLink, category) {
 
     const visitLinkButton = document.createElement('a');
     visitLinkButton.href = wikiLink;
-    visitLinkButton.target = "_blank"; // Abre em uma nova aba
-    visitLinkButton.className = "visit-button";  // Estilo para o botão (você pode criar esse estilo no CSS)
+    visitLinkButton.target = "_blank";
+    visitLinkButton.className = "visit-button";
     visitLinkButton.innerText = "Visitar Página da Wikipédia";
-    modalContent.appendChild(visitLinkButton);  // Adiciona o botão no modal
+    modalContent.appendChild(visitLinkButton);
 
-    // Exibe a categoria, se encontrada
+    // Adicionar a categoria como um elemento separado e removível
     const categoryElement = document.createElement('p');
+    categoryElement.className = "category";
     categoryElement.innerText = `Categoria: ${category}`;
     modalContent.appendChild(categoryElement);
 
-    // Exibe o modal
-    const modal = document.getElementById('infoModal');
     modal.style.display = "block";
 
-    // Fechar o modal ao clicar no botão de fechar
     const closeButton = document.querySelector('.modal .close');
     if (closeButton) {
-        closeButton.onclick = function() {
+        closeButton.onclick = function () {
             modal.style.display = "none";
         };
     }
 
-    // Fechar o modal ao clicar fora da área do modal
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
