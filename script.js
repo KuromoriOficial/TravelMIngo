@@ -21,6 +21,38 @@ const cidades = [
     { nome: "Brasilia", coordenadas: [15.8030, 47.9007] }  // brasilia
 ];
 
+document.addEventListener("DOMContentLoaded", () => {
+    const vlibrasContainer = document.getElementById("vlibras-container");
+    const vlibrasScript = document.createElement("script");
+    vlibrasScript.src = "https://vlibras.gov.br/app/vlibras-plugin.js";
+    vlibrasScript.onload = () => {
+        new window.VLibras.Widget("https://vlibras.gov.br/app", { container: vlibrasContainer });
+    };
+    document.body.appendChild(vlibrasScript);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const mapElement = document.getElementById("map");
+    const vlibrasButton = document.querySelector("[vw-access-button]");
+    const vlibrasWrapper = document.querySelector("[vw-plugin-wrapper]");
+
+    if (vlibrasButton && vlibrasWrapper) {
+        // Desativa eventos do mapa ao interagir com o VLibras
+        vlibrasButton.addEventListener("mouseenter", () => {
+            mapElement.style.pointerEvents = "none";
+        });
+
+        vlibrasWrapper.addEventListener("mouseenter", () => {
+            mapElement.style.pointerEvents = "none";
+        });
+
+        // Reativa eventos do mapa ao sair do VLibras
+        vlibrasButton.addEventListener("mouseleave", () => {
+            mapElement.style.pointerEvents = "auto";
+        });
+    }
+});
+
 // Selecionar uma cidade aleatória ao carregar o mapa
 const cidadeAleatoria = cidades[Math.floor(Math.random() * cidades.length)];
 
@@ -110,7 +142,7 @@ function loadTouristSpots() {
     const center = map.getCenter();
     const lat = center.lat;
     const lon = center.lng;
-    
+
     const radius = calculateRadius();
     const visibleAreaKey = getVisibleAreaKey();  // Obtém a área visível atual
 
@@ -292,7 +324,7 @@ function showInfoModal(title, description, imageUrl, wikiLink, category) {
     };
 }
 
-window.onload = function() {
+window.onload = function () {
     const backgroundMusic = document.getElementById('backgroundMusic');
     if (backgroundMusic) {
         backgroundMusic.volume = 0.2;
@@ -340,8 +372,8 @@ function checkPopupStatus() {
     const lastShownTime = localStorage.getItem('lastShownTime');
     const currentTime = new Date().getTime();
 
-     // Se o pop-up foi fechado com "Talvez mais tarde" e passaram 20 minutos, mostra novamente
-     if (lastShownTime && (currentTime - lastShownTime) >= 60000) { // 20 minutos = 1200000 milissegundos
+    // Se o pop-up foi fechado com "Talvez mais tarde" e passaram 20 minutos, mostra novamente
+    if (lastShownTime && (currentTime - lastShownTime) >= 60000) { // 20 minutos = 1200000 milissegundos
         showPopup();
     } else if (!lastShownTime) {
         showPopup(); // Exibe o pop-up pela primeira vez se não houver registro
@@ -394,3 +426,10 @@ window.onload = function () {
 // Inicializando o mapa com as coordenadas fornecidas e pontos turísticos
 initMap(defaultLat, defaultLon);
 loadTouristSpots(); // Carregar pontos turísticos ao inicializar
+document.addEventListener("DOMContentLoaded", () => {
+    const vlibrasWidget = document.querySelector("[vw]");
+    if (vlibrasWidget) {
+        vlibrasWidget.style.zIndex = "10000";
+        vlibrasWidget.style.position = "fixed";
+    }
+});

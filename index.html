@@ -1,53 +1,71 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TravelMingo 12.1</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    
+
     <!-- Adicionar o novo favicon -->
     <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
 </head>
+
 <body>
-<!-- Ícone de menu (três barras) -->
-<div id="menuIcon" class="menu-icon">
-    &#9776;
-</div>
+<!-- CUIDADO, ESTE LEITOR DE LIBRAS NO MAPA ESTA TOTALEMENTE BUGADO E CASO CLICADO IRA CRASH A RENDER!!! -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+    <!-- Ícone de menu (três barras) -->
+    <div id="menuIcon" class="menu-icon">
+        &#9776;
+    </div>
 
-<!-- Ícone de menu (imagem personalizada) -->
-<div id="menuIcon1" class="menu-icon1">
-    <img src="images/menuicon.png" alt="Ícone de menu" />
-</div>
+    <!-- Ícone de menu (imagem personalizada) -->
+    <div id="menuIcon1" class="menu-icon1">
+        <img src="images/menuicon.png" alt="Ícone de menu" />
+    </div>
 
-<!-- Menu expansível -->
-<div id="menu" class="menu">
-    <h1>TravelMIngo 12.1</h1>
+    <!-- Menu expansível -->
+    <div id="menu" class="menu">
+        <h1>TravelMIngo 12.4</h1>
+        <!-- Campo de pesquisa e botão -->
+        <input type="text" id="search" placeholder="Pesquise um endereço" />
+        <button id="searchButton">Buscar</button>
+
+        <!-- Caixas de seleção para tipos de pontos turísticos -->
+        <div id="filterOptions">
+            <button id="show-research-popup">Mostre a pesquisa</button>
+        </div>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>TravelMingo</title>
-
-    <!-- Campo de pesquisa e botão -->
-    <input type="text" id="search" placeholder="Pesquise um endereço" />
-    <button id="searchButton">Buscar</button>
-    
-    <!-- Caixas de seleção para tipos de pontos turísticos -->
-    <div id="filterOptions">
-        <h2>Selecione os tipos de pontos turísticos</h2>
-        <label><input type="checkbox" value="museum" checked /> Museu</label>
-        <label><input type="checkbox" value="monument" checked /> Monumento</label>
-        <label><input type="checkbox" value="landmark" checked /> Marco Histórico</label>
-        <label><input type="checkbox" value="gallery" checked /> Galeria</label>
-        <!-- Novas categorias da Wikipédia -->
-        <label><input type="checkbox" value="National_museum" /> Museu Nacional</label>
-        <label><input type="checkbox" value="Art_gallery" /> Galeria de Arte</label> <br>
-            <!-- Outros botões do menu -->
-            <button id="show-research-popup">Mostre a pesquisa</button>
-            <!-- Restante do conteúdo do menu -->
+        <div id="gt-mordadam-43217984"></div>
+        <script type="text/javascript">
+            window.gtranslateSettings = window.gtranslateSettings || {};
+            window.gtranslateSettings["43217984"] = {
+                default_language: "en", // Idioma padrão
+                languages: ["zh-CN","en","hi","es","ar","bn","pt","ru","ja","id","de","fa","fr","tr","vi","ur","ko","th","it","ta","pl","uk","my","uz","ro","hu","nl","am","sw","ps","el","az","cs","mr","km","bg","sd","ne","sv","fi","sk","lt","sr","hr","lv","kn","tg","mn","la","si","sl","ml","ka","te","gd","bs","yi","zu","ha","ny","ig","af","et","st","sn","lb","mg","jw","su","sm","da","ceb","no","gu","lo","ku","zh-TW","is","haw","hmn","pa","hy","ky",],
+                wrapper_selector: "#gt-mordadam-43217984",
+                native_language_names: 1,
+                flag_style: "2d",
+                flag_size: 24,
+                horizontal_position: "inline",
+                flags_location: "flags/",
+            };
+        </script>
+        <script src="js/gt.min.js" data-gt-widget-id="43217984"></script>
 
     </div>
-    
+
     <div id="feedback-popup" class="popup">
         <div class="popup-content">
             <span class="close-btn" id="close-popup">&times;</span>
@@ -61,7 +79,7 @@
             <button id="go-to-form">Responder agora!</button>
             <button id="maybe-later">Talvez mais tarde ._.</button>
             <button id="no-thanks">Não quero, me deixe em paz! >:/</button>
-            
+
         </div>
     </div>
     <!--
@@ -71,53 +89,64 @@
 -->
     <!-- Google Translate Widget -->
     <div id="google_translate_element"></div>
-</div>
-
-<!-- Script do Google Translate -->
-<script type="text/javascript">
-function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-        pageLanguage: 'en', 
-        includedLanguages: 'ar,bg,de,el,en,es,fi,fr,hi,id,it,iws,ja,ko,landmark,nl,no,pl,pt,ro,ru,sv,th,tr,vi,zh-CN',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-    }, 'google_translate_element');
-}
-</script>
-
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
-<!-- Elemento de áudio de fundo -->
-<audio id="backgroundMusic" loop>
-    <source src="musical.m4a" type="audio/mpeg">
-    Seu navegador não suporta o elemento de áudio.
-</audio>
-
-<!-- Modal para exibir informações sobre o ponto turístico -->
-<div id="infoModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 id="modalTitle"></h2>
-        <img id="modalImage" src="" alt="Imagem do ponto turístico" style="max-width:100%; height:auto;">
-        <p id="modalDescription"></p>
-        <!-- O conteúdo do modal será preenchido pela função JavaScript -->
-        <span class="close">&times;</span>
     </div>
-</div>
+
+    <!-- Script do Google Translate -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'ar,bg,de,el,en,es,fi,fr,hi,id,it,iws,ja,ko,landmark,nl,no,pl,pt,ro,ru,sv,th,tr,vi,zh-CN',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+
+    <script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <!-- Elemento de áudio de fundo -->
+    <audio id="backgroundMusic" loop>
+        <source src="musical.m4a" type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+
+    <!-- Modal para exibir informações sobre o ponto turístico -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <img id="modalImage" src="" alt="Imagem do ponto turístico" style="max-width:100%; height:auto;">
+            <p id="modalDescription"></p>
+            <!-- O conteúdo do modal será preenchido pela função JavaScript -->
+            <span class="close">&times;</span>
+        </div>
+    </div>
 
     </div>
-</div>
+    </div>
 
-<div id="tourist-info">
-    <input type="text" id="wikidata-code" placeholder="Insira o código Wikidata (ex: Q6089036)">
-    <button onclick="fetchWikidata()">Buscar Imagem</button>
-    <img id="tourist-image" src="" alt="Imagem do ponto turístico" style="max-width: 500px; display: none;">
-  </div>
-  
+    <div id="tourist-info">
+        <input type="text" id="wikidata-code" placeholder="Insira o código Wikidata (ex: Q6089036)">
+        <button onclick="fetchWikidata()">Buscar Imagem</button>
+        <img id="tourist-image" src="" alt="Imagem do ponto turístico" style="max-width: 500px; display: none;">
+    </div>
 
-<!-- Mapa Leaflet -->
-<div id="map"></div>
+    <!-- Mapa Leaflet -->
+    <div id="map"></div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="script.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+    </script>
+
+
 </body>
+
 </html>
